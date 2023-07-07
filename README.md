@@ -1,2 +1,2 @@
 # KNNinja
-Project tugas mata kuliah Data Mining Semester 6 Teknologi Informasi Universitas Ibrahimy
+Project assignment for Semester 6 Data Mining course, Information Technology, Ibrahimy University
