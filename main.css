@@ -1,0 +1,81 @@
+/* Config CSS */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Rancho&display=swap');
+
+* {
+    margin: 0;
+    box-sizing: border-box;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    font-family: Poppins, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+::-webkit-scrollbar {
+    display: none;
+    transition: 1000ms;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Header CSS */
+nav {
+    min-height: 3em;
+}
+
+/* Sidebar CSS */
+aside {
+    margin: 2em;
+    display: flex;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    margin-top: 5em;
+    background-color: rgb(255, 255, 255);
+    padding: 1em;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+}
+
+.sidebar ul {
+    padding: 1em;
+}
+
+.sidebar ul li+li {
+    margin-top: 1em;
+}
+
+ul li a {
+    text-decoration: none;
+    color: #34364a;
+    transition: 0.5s;
+}
+
+ul li a:hover {
+    color: #0d6efd;
+}
+
+/* Main CSS */
+.wrapper {
+    display: flex;
+    align-items: center;
+}
+
+main {
+    min-width: 70%;
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+}

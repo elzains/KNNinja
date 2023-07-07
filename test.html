@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>KNNinja</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h2>KNNinja</h2>
+    <div class="input-group mb-3">
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" id="customFile">
+        <label class="custom-file-label" for="customFile">Choose file</label>
+      </div>
+      <div class="input-group-append">
+        <button class="btn btn-primary" id="importButton" type="button">Import</button>
+      </div>
+    </div>
+
+    <table id="dataTable" class="table table-bordered mt-4">
+      <thead>
+        <tr>
+          <th>X</th>
+          <th>Y</th>
+          <th>Kategori</th>
+        </tr>
+      </thead>
+      <tbody id="dataBody">
+      </tbody>
+    </table>
+
+    <h4 class="mt-4">KNN Classifier Results</h4>
+    <form>
+      <div class="form-group">
+        <label for="atributex">Nilai X:</label>
+        <input type="text" class="form-control" id="atributex" placeholder="Input Atribute X">
+      </div>
+      <div class="form-group">
+        <label for="atributey">Nilai Y:</label>
+        <input type="text" class="form-control" id="atributey" placeholder="Input Atribute Y">
+      </div>
+      <button type="button" class="btn btn-primary" id="classifyButton">Classify</button>
+    </form>
+
+    <div id="resultContainer" class="mt-4">
+      <h5>Classification Result:</h5>
+      <p id="resultText"></p>
+    </div>
+
+    <h4 class="mt-4">KNN Classifier Results Table</h4>
+    <table id="resultTable" class="table table-bordered mt-4">
+      <thead>
+        <tr>
+          <th>X</th>
+          <th>Y</th>
+          <th>Result Category</th>
+        </tr>
+      </thead>
+      <tbody id="resultBody">
+      </tbody>
+    </table>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      let dataset = [];
+
+      $('#importButton').click(function() {
+        let fileInput = document.getElementById('customFile');
+        let file = fileInput.files[0];
+        let reader = new FileReader();
+
+        reader.onload = function(e) {
+          let data = new Uint8Array(e.target.result);
+          let workbook = XLSX.read(data, { type: 'array' });
+          let sheetName = workbook.SheetNames[0];
+          let worksheet = workbook.Sheets[sheetName];
+          dataset = XLSX.utils.sheet_to_json(worksheet);
+
+          // Tabel Row
+          let tableBody = '';
+          dataset.forEach(function(row) {
+            tableBody += '<tr>';
+            tableBody += '<td>' + row['X'] + '</td>';
+            tableBody += '<td>' + row['Y'] + '</td>';
+            tableBody += '<td>' + row['Kategori'] + '</td>';
+            tableBody += '</tr>';
+          });
+
+          // Manipulasi row
+          $('#dataBody').html(tableBody);
+        };
+
+        reader.readAsArrayBuffer(file);
+      });
+
+      $('#classifyButton').click(function() {
+        let X = parseFloat($('#atributex').val());
+        let Y = parseFloat($('#atributey').val());
+
+        if (isNaN(X) || isNaN(Y)) {
+          $('#resultText').text('Invalid input!');
+          return;
+        }
+
+        let k = 3; // Set nilai K = 3
+
+        let distances = [];
+        dataset.forEach(function(data) {
+          let dist = Math.sqrt(Math.pow(X - data['X'], 2) + Math.pow(Y - data['Y'], 2));
+          distances.push({
+            distance: dist,
+            class: data['Kategori']
+          });
+        });
+
+        distances.sort(function(a, b) {
+          return a.distance - b.distance;
+        });
+
+        let classCounts = {};
+        for (let i = 0; i < k; i++) {
+          let cls = distances[i].class;
+          if (classCounts[cls]) {
+            classCounts[cls]++;
+          } else {
+            classCounts[cls] = 1;
+          }
+        }
+
+        let result = Object.keys(classCounts).reduce(function(a, b) {
+          return classCounts[a] > classCounts[b] ? a : b;
+        });
+
+        $('#resultText').text('Predicted Class: ' + result);
+
+        // Tabel results
+        let resultTableBody = '';
+        resultTableBody += '<tr>';
+        resultTableBody += '<td>' + X + '</td>';
+        resultTableBody += '<td>' + Y + '</td>';
+        resultTableBody += '<td>' + result + '</td>';
+        resultTableBody += '</tr>';
+
+        // Manipulasi DOM Append
+        $('#resultBody').html(resultTableBody);
+      });
+    });
+  </script>
+
+</body>
+</html>
